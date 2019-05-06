@@ -1,0 +1,42 @@
+version: '2'
+services:
+  nginx:
+    image: nginx
+    container_name: nginx
+    ports:
+      - "8080:8080"
+    restart: always
+    volumes:
+      - ./conf/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./conf/nginx/vhost.d:/etc/nginx/vhost.d
+      - ./files/vhosts:/var/www/vhosts
+    links:
+      - php
+  php:
+    # image: php:7.2-fpm-alpine
+    # image: php:5.5-fpm-alpine
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile-php_fpm
+    container_name: php_fpm
+    ports:
+      - "9000:9000"
+    restart: always
+    volumes:
+      - ./files/vhosts:/var/www/vhosts
+      - ./conf/php-fpm/php.ini:/usr/local/etc/php/php.ini
+      - ./conf/php-fpm/www.conf:/usr/local/etc/php-fpm.d/www.conf
+    links:
+      - mysql
+  mysql:
+    image: mysql:5.7.26
+    container_name: mysql
+    ports:
+      - "3306:3306"
+    restart: always
+    volumes:
+      - ./conf/mysql/mysqld.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf
+      - ./files/mysql:/var/lib/mysql
+      - ./files/var/backups/server/databases:/databases
+    environment:
+      MYSQL_ROOT_PASSWORD: abcABC123
