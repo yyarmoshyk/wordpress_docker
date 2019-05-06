@@ -37,6 +37,5 @@ services:
     volumes:
       - ./conf/mysql/mysqld.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf
       - ./files/mysql:/var/lib/mysql
-      - ./files/var/backups/server/databases:/databases
     environment:
       MYSQL_ROOT_PASSWORD: abcABC123
